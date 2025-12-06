@@ -1,6 +1,14 @@
 
 ## Changelog
-`1.1.34
+`1.1.36`
+- ➕ New default stacking style (RoRR): Extra stacks will give -30% CDR to the affected skill. Old behaviors are still available through config!
+- ➕ New skills: Seeker, CHEF, Drifter.
+- 🛠️ Ancient Scepter is now capable of being a Temporary Item, like Retruns.
+
+`1.1.35`
+- 🩹 fixed for AC
+
+`1.1.34`
 - 🩹 Recompiled mod for SOTS
 
 `1.1.33`
