@@ -56,7 +56,7 @@ namespace AncientScepter.ScepterSkillsMonster
 
         private void FireMegaLaser_FireBullet(On.EntityStates.TitanMonster.FireMegaLaser.orig_FireBullet orig, FireMegaLaser self, Transform modelTransform, Ray aimRay, string targetMuzzle, float maxDistance)
         {
-            if (self is FireGoldMegaLaser && AncientScepterItem.instance.GetCount(self.outer.commonComponents.characterBody) > 0)
+            if (self is FireGoldMegaLaser && AncientScepterItem.instance.GetCountEffective(self.outer.commonComponents.characterBody) > 0)
             {
                 if (self.isAuthority && self.lockedOnHurtBox && self.lockedOnHurtBox.healthComponent)
                 {

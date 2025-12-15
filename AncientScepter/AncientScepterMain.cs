@@ -33,7 +33,7 @@ namespace AncientScepter
 
     public class AncientScepterMain : BaseUnityPlugin
     {
-        public const string ModVer = "1.1.36";
+        public const string ModVer = "1.1.37";
         public const string ModName = "StandaloneAncientScepter";
         public const string ModGuid = "com.DestroyedClone.AncientScepter";
 
@@ -144,8 +144,8 @@ namespace AncientScepter
             bool aiBlacklist = 
                 Config.Bind("Item: " + item.ItemName, 
                             "Blacklist Item from AI Use?",
-                            false, 
-                            "Should the AI not be able to obtain this item?").Value;
+                            true, 
+                            "Should the AI not be able to obtain this item? By default, most monsters lack skill upgrades and will reroll.").Value;
 
             ItemStatusDictionary.Add(item, enabled);
 

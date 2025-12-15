@@ -136,25 +136,67 @@ namespace AncientScepter
         }
 
         //Based on ThinkInvis' methods
-        public int GetCount(CharacterBody body)
+        public int GetCountPermanent(CharacterBody body)
         {
             if (!body || !body.inventory) { return 0; }
 
-            return body.inventory.GetItemCount(ItemDef);
+            return body.inventory.GetItemCountPermanent(ItemDef);
         }
 
-        public int GetCount(CharacterMaster master)
+        public int GetCountPermanent(CharacterMaster master)
         {
             if (!master || !master.inventory) { return 0; }
 
-            return master.inventory.GetItemCount(ItemDef);
+            return master.inventory.GetItemCountPermanent(ItemDef);
         }
 
-        public int GetCountSpecific(CharacterBody body, ItemDef itemDef)
+        public int GetCountSpecificPermanent(CharacterBody body, ItemDef itemDef)
         {
             if (!body || !body.inventory) { return 0; }
 
-            return body.inventory.GetItemCount(itemDef);
+            return body.inventory.GetItemCountPermanent(itemDef);
+        }
+
+        public int GetCountTemporary(CharacterBody body)
+        {
+            if (!body || !body.inventory) { return 0; }
+
+            return body.inventory.GetItemCountTemp(ItemDef);
+        }
+
+        public int GetCountTemporary(CharacterMaster master)
+        {
+            if (!master || !master.inventory) { return 0; }
+
+            return master.inventory.GetItemCountTemp(ItemDef);
+        }
+
+        public int GetCountSpecificTemporary(CharacterBody body, ItemDef itemDef)
+        {
+            if (!body || !body.inventory) { return 0; }
+
+            return body.inventory.GetItemCountTemp(itemDef);
+        }
+
+        public int GetCountEffective(CharacterBody body)
+        {
+            if (!body || !body.inventory) { return 0; }
+
+            return body.inventory.GetItemCountEffective(ItemDef);
+        }
+
+        public int GetCountEffective(CharacterMaster master)
+        {
+            if (!master || !master.inventory) { return 0; }
+
+            return master.inventory.GetItemCountEffective(ItemDef);
+        }
+
+        public int GetCountSpecificEffective(CharacterBody body, ItemDef itemDef)
+        {
+            if (!body || !body.inventory) { return 0; }
+
+            return body.inventory.GetItemCountEffective(itemDef);
         }
 
         ///<summary>A server-only rng instance based on the current run's seed.</summary>

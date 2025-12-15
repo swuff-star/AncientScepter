@@ -61,7 +61,7 @@ namespace AncientScepter
             if (damageInfo == null || !damageInfo.attacker) return;
             var attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
             if (!attackerBody) return;
-            if (AncientScepterItem.instance.GetCount(attackerBody) <= 0) return;
+            if (AncientScepterItem.instance.GetCountEffective(attackerBody) <= 0) return;
 
             if ((damageInfo.damageType & DamageType.GiveSkullOnKill) == DamageType.GiveSkullOnKill && !damageInfo.HasModdedDamageType(CustomDamageTypes.ScepterBandit2SkullDT))
             {
@@ -104,7 +104,7 @@ namespace AncientScepter
 
         private void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
         {
-            if (AncientScepterItem.instance.GetCount(damageReport?.attackerBody) <= 0) return;
+            if (AncientScepterItem.instance.GetCountEffective(damageReport?.attackerBody) <= 0) return;
             var damageInfo = damageReport.damageInfo;
 
             if ((damageInfo.damageType & DamageType.GiveSkullOnKill) == DamageType.GiveSkullOnKill)

@@ -49,6 +49,7 @@
 This refers to compatibility that's included just with this mod, and will not be an exhaustive list of every mod that implements this.
 
 ## To-Do/Issues
+* False Son & Operator Scepter Skills
 * Mithrix Scepter
 * CaptainBustedAirstrike support:
 	* Currently it uses the reduced cooldown from the standard alt airstrike.
@@ -65,7 +66,7 @@ This refers to compatibility that's included just with this mod, and will not be
 * **DestroyedClone** [⚡](https://thunderstore.io/package/DestroyedClone/)[🐙](https://github.com/DestroyedClone) - Porter, Maintainer
 * **rob** - Fixed code
 * **bruh** and **redacted** - Made the Scepter model
-* **swuff** [🐙](https://github.com/swuff-star) - Updated Textures, Consultation
+* **swuff** [🐙](https://github.com/swuff-star) - Updated Textures, Consultation, Code/Maintenance
 * **QandQuestion**  - Lore
 * **Moffein** [⚡](https://thunderstore.io/package/Moffein/)[🐙](https://github.com/Moffein) - Consultation
 * **Mico27** [⚡](https://thunderstore.io/package/Mico27/)[🐙](https://github.com/Mico27/) - Orb creation help

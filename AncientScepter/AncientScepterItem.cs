@@ -114,7 +114,7 @@ namespace AncientScepter
 
         public override string ItemFullDescription =>
             $"Upgrade one of your <style=cIsUtility>skills</style>. " + $"{(rerollMode != RerollMode.Disabled ? "<style=cStack>(Unique per survivor)</style>." : "Reduce skill cooldown by <style=cIsUtility>0%</style> <style=cStack>(+30% per stack. Unique per survivor)</style>.")}"
-                        + $"\n <style=cStack>{(rerollMode != RerollMode.Disabled ? "Extra/Unusable" : "Unusable")} pickups will reroll into {(rerollMode == RerollMode.Scrap ? "Item Scrap, Red" : "other Legendary items.")}</style>";
+                        + $"\n<style=cStack>{(rerollMode != RerollMode.Disabled ? "Extra/Unusable" : "Unusable")} pickups will reroll into {(rerollMode == RerollMode.Scrap ? "Item Scrap, Red" : "other Legendary items.")}</style>";
 
         public override string ItemLore => "Perfected energies. <He> holds it before us. The crystal of foreign elements is not attached physically, yet it does not falter from the staff's structure.\n\nOverwhelming strength. We watch as <His> might splits the ground asunder with a single strike.\n\nWondrous possibilities. <His> knowledge unlocks further pathways of development. We are enlightened by <Him>.\n\nExcellent results. From <His> hands, [Nanga] takes hold. It is as <He> said: The weak are culled.\n\nRisking everything. The crystal destabilizies. [Nanga] is gone, and <He> is forced to wield it once again.\n\nPower comes at a cost. <He> is willing to pay.";
 
@@ -814,14 +814,26 @@ namespace AncientScepter
             handlingInventory = true;
             if (!HandleScepterSkill(body) && RerollUnused())
             {
-                if (GetCount(body) > 0)
+                if (GetCountPermanent(body) > 0)
                 {
-                    Reroll(body, GetCount(body));
+                    Reroll(body, GetCountPermanent(body));
+                }
+
+                else if (GetCountTemporary(body) > 0)
+                {
+                    Reroll(body, GetCountTemporary(body), true);
                 }
             }
-            else if (GetCount(body) > 1 && rerollMode != RerollMode.Disabled)
+
+            else if (GetCountPermanent(body) > 1 && rerollMode != RerollMode.Disabled)
             {
-                Reroll(body, GetCount(body) - 1);
+                Reroll(body, GetCountPermanent(body) - 1);
+            }
+
+            // should still refresh duration? thats fine by me
+            else if (GetCountEffective(body) > 1 && GetCountTemporary(body) > 0 && rerollMode != RerollMode.Disabled)
+            {
+                Reroll(body, GetCountTemporary(body) - 1, true);
             } 
             handlingInventory = false;
           }
@@ -843,6 +855,11 @@ namespace AncientScepter
 
         private void Reroll(CharacterBody self, int count)
         {
+            Reroll(self, count, false);
+        }
+
+        private void Reroll(CharacterBody self, int count, bool isTemp)
+        {
             if (count <= 0) return;
             switch (rerollMode)
             {
@@ -853,9 +870,17 @@ namespace AncientScepter
                     var notifylist = new List<ItemIndex>();
                     for (var i = 0; i < count; i++)
                     {
-                        self.inventory.RemoveItem(ItemDef, 1);
                         var newItem = PickupCatalog.GetPickupDef(list[UnityEngine.Random.Range(0, list.Count)]).itemIndex;
-                        self.inventory.GiveItem(newItem);
+                        if (isTemp)
+                        {
+                            self.inventory.RemoveItemTemp(ItemDef.itemIndex, 1);
+                            self.inventory.GiveItemTemp(newItem);
+                        }
+                        else
+                        {
+                            self.inventory.RemoveItemPermanent(ItemDef, 1);
+                            self.inventory.GiveItemPermanent(newItem);
+                        }
                         notifylist.Add(newItem);
                     }
                     if (enableSOTVTransforms){
@@ -867,8 +892,16 @@ namespace AncientScepter
                 case RerollMode.Scrap:
                     for (var i = 0; i < count; i++)
                     {
-                        self.inventory.RemoveItem(ItemDef, 1);
-                        self.inventory.GiveItem(RoR2Content.Items.ScrapRed);
+                        if (isTemp)
+                        {
+                            self.inventory.RemoveItemTemp(ItemDef.itemIndex, 1);
+                            self.inventory.GiveItemTemp(RoR2Content.Items.ScrapRed.itemIndex); // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                        }
+                        else
+                        {
+                            self.inventory.RemoveItemPermanent(ItemDef, 1);
+                            self.inventory.GiveItemPermanent(RoR2Content.Items.ScrapRed);
+                        }
                     }
                     if (enableSOTVTransforms)
                         CharacterMasterNotificationQueue.SendTransformNotification(self.master, ItemDef.itemIndex, RoR2Content.Items.ScrapRed.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
@@ -900,13 +933,13 @@ namespace AncientScepter
                 switch (skillSlot)
                 {
                     case SkillSlot.Primary:
-                        return self.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0;
+                        return self.inventory.GetItemCountEffective(RoR2Content.Items.LunarPrimaryReplacement) > 0;
                     case SkillSlot.Secondary:
-                        return self.inventory.GetItemCount(RoR2Content.Items.LunarSecondaryReplacement) > 0;
+                        return self.inventory.GetItemCountEffective(RoR2Content.Items.LunarSecondaryReplacement) > 0;
                     case SkillSlot.Utility:
-                        return self.inventory.GetItemCount(RoR2Content.Items.LunarUtilityReplacement) > 0;
+                        return self.inventory.GetItemCountEffective(RoR2Content.Items.LunarUtilityReplacement) > 0;
                     case SkillSlot.Special:
-                        return self.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) > 0;
+                        return self.inventory.GetItemCountEffective(RoR2Content.Items.LunarSpecialReplacement) > 0;
                 }
                 return false;
             }
@@ -917,7 +950,7 @@ namespace AncientScepter
                 var repl = scepterReplacers.FindAll(x => x.bodyName == bodyName);
                 if (repl.Count > 0)
                 {
-                    if(repl.Select(x => x.replDef).Intersect(self.skillLocator.allSkills.Select(x => x.skillDef)).Any() && GetCount(self) > 0){return true;}
+                    if(repl.Select(x => x.replDef).Intersect(self.skillLocator.allSkills.Select(x => x.skillDef)).Any() && GetCountEffective(self) > 0){return true;}
                     GenericSkill targetSkill = null;
                     SkillSlot targetSlot = SkillSlot.None;
                     ScepterReplacer replVar = null;
@@ -940,7 +973,7 @@ namespace AncientScepter
                     if (replVar == null){ return heresyExists ? stridesInteractionMode != StridesInteractionMode.ScepterRerolls : false;}
                     var outerOverride = handlingOverride;
                     handlingOverride = true;
-                    if (!forceOff && GetCount(self) > 0)
+                    if (!forceOff && GetCountEffective(self) > 0)
                     {
                         if (stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasHeresyForSlot(targetSlot))
                         {

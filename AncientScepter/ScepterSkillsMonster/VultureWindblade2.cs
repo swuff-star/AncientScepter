@@ -59,7 +59,7 @@ namespace AncientScepter.ScepterSkillsMonster
         private void FireWindblade_OnEnter(On.EntityStates.Vulture.Weapon.FireWindblade.orig_OnEnter orig, EntityStates.Vulture.Weapon.FireWindblade self)
         {
             orig(self);
-            if (self.isAuthority && AncientScepterItem.instance.GetCount(self.characterBody) > 0)
+            if (self.isAuthority && AncientScepterItem.instance.GetCountEffective(self.characterBody) > 0)
             {
                 if (Util.CheckRoll(50f, self.characterBody.master))
                 {
